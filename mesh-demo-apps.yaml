@@ -1,0 +1,150 @@
+---
+# 1. Customer (Frontend) Service & Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer
+  namespace: mesh-demo
+  labels:
+    app: customer
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: customer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-v1
+  namespace: mesh-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer
+      version: v1.1
+  template:
+    metadata:
+      labels:
+        app: customer
+        version: v1.1
+      annotations:
+        sidecar.istio.io/proxyCPU: "10m"
+        sidecar.istio.io/proxyMemory: "64Mi"
+    spec:
+      containers:
+      - name: customer
+        image: quay.io/rhdevelopers/istio-tutorial-customer:v1.1
+        ports:
+        - containerPort: 8080
+---
+# 2. Preference Service & Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: preference
+  namespace: mesh-demo
+  labels:
+    app: preference
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: preference
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: preference-v1
+  namespace: mesh-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: preference
+      version: v1.1
+  template:
+    metadata:
+      labels:
+        app: preference
+        version: v1.1
+      annotations:
+        sidecar.istio.io/proxyCPU: "10m"
+        sidecar.istio.io/proxyMemory: "64Mi"
+    spec:
+      containers:
+      - name: preference
+        image: quay.io/rhdevelopers/istio-tutorial-preference:v1.1
+        ports:
+        - containerPort: 8080
+---
+# 3. Recommendation (Backend) Service & Deployments
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation
+  namespace: mesh-demo
+  labels:
+    app: recommendation
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: recommendation
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-v1
+  namespace: mesh-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation
+      version: v1.2
+  template:
+    metadata:
+      labels:
+        app: recommendation
+        version: v1.2
+      annotations:
+        sidecar.istio.io/proxyCPU: "10m"
+        sidecar.istio.io/proxyMemory: "64Mi"
+    spec:
+      containers:
+      - name: recommendation
+        image: quay.io/rhdevelopers/istio-tutorial-recommendation:v1.2
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-v2
+  namespace: mesh-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation
+      version: v2.1
+  template:
+    metadata:
+      labels:
+        app: recommendation
+        version: v2.1
+      annotations:
+        sidecar.istio.io/proxyCPU: "10m"
+        sidecar.istio.io/proxyMemory: "64Mi"
+    spec:
+      containers:
+      - name: recommendation
+        image: quay.io/rhdevelopers/istio-tutorial-recommendation:v2.1
+        ports:
+        - containerPort: 8080
+
